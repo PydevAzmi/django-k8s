@@ -1,0 +1,7 @@
+boto3
+Django==5.2
+django-storages
+gunicorn
+psycopg2-binary
+python-decouple
+requests
