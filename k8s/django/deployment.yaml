@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-app-deployment
+  labels:
+    app: django-app
+spec:
+  replicas: 3 
+  selector:
+    matchLabels:
+      app: django-app
+  template:
+    metadata:
+      labels:
+        app: django-app
+    spec:
+      containers:
+        - name: django-app
+          image: pydevazmi/my-django-app:v0.1
+          ports:
+            - containerPort: 8000
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: database-name
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: password
+            - name: POSTGRES_HOST # Match your Django settings.py
+              value: postgres # Name of the PostgreSQL Service
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: django-credentials
+                  key: secret_key
+            - name: DEBUG
+              valueFrom:
+                secretKeyRef:
+                  name: django-credentials
+                  key: debug
+         

@@ -1,7 +1,7 @@
 services:
   database:
     image: postgres:latest
-    container_name: database
+    container_name: postgres
     ports:
       - "5431:5432"
     environment:
@@ -18,7 +18,9 @@ services:
     container_name: backend
     command: >
       bash -c "while ! nc -z database 5432; do sleep 1; done &&
-               python manage.py runserver 0.0.0.0:8000"
+        python manage.py collectstatic --noinput &&
+        python manage.py migrate --noinput &&
+        gunicorn --bind 0.0.0.0:8000 project.wsgi:application"
     volumes:
       - .:/code
     ports:
