@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: django-service
+spec:
+  type: NodePort # Or ClusterIP for internal access
+  selector:
+    app: django-app
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+      nodePort: 30002 # Optional: Specify a port in the 30000-32767 range
